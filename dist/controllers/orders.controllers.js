@@ -39,18 +39,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.completeOrder = exports.create = exports.getOne = exports.getOrderByUser = void 0;
+exports.completeOrder = exports.create = exports.getOrderDetails = exports.getOne = exports.getOrderByUser = void 0;
 var express_validator_1 = require("express-validator");
 var orderStatus_enum_1 = __importDefault(require("../enums/orderStatus.enum"));
 var order_model_1 = require("../models/order.model");
 var orderStore = new order_model_1.OrderStore();
 var getOrderByUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var orderData, err_1;
+    var errors, orderData, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, orderStore.getManyByColumn('user_id', req.params.user_id)];
+                errors = (0, express_validator_1.validationResult)(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.array() })];
+                }
+                return [4 /*yield*/, orderStore.getUserOrders(Number(req.params.user_id), req.body.order_status)];
             case 1:
                 orderData = _a.sent();
                 if (!orderData) {
@@ -71,11 +75,15 @@ var getOrderByUser = function (req, res, next) { return __awaiter(void 0, void 0
 }); };
 exports.getOrderByUser = getOrderByUser;
 var getOne = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var orderData, err_2;
+    var errors, orderData, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
+                errors = (0, express_validator_1.validationResult)(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.array() })];
+                }
                 return [4 /*yield*/, orderStore.getByColumn('id', req.params.id)];
             case 1:
                 orderData = _a.sent();
@@ -96,8 +104,31 @@ var getOne = function (req, res, next) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.getOne = getOne;
+var getOrderDetails = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var orderData, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, orderStore.getOrderDetails(Number(req.params.id))];
+            case 1:
+                orderData = _a.sent();
+                res.json({
+                    status: 'success',
+                    data: orderData || {}
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                next(err_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getOrderDetails = getOrderDetails;
 var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var errors, orderData, createdOrder, err_3;
+    var errors, orderData, createdOrder, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -120,8 +151,8 @@ var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 });
                 return [3 /*break*/, 3];
             case 2:
-                err_3 = _a.sent();
-                next(err_3);
+                err_4 = _a.sent();
+                next(err_4);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -129,7 +160,7 @@ var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0
 }); };
 exports.create = create;
 var completeOrder = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var errors, orderData, err_4;
+    var errors, orderData, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -156,8 +187,8 @@ var completeOrder = function (req, res, next) { return __awaiter(void 0, void 0,
                 });
                 return [3 /*break*/, 4];
             case 3:
-                err_4 = _a.sent();
-                next(err_4);
+                err_5 = _a.sent();
+                next(err_5);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

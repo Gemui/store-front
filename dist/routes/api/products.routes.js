@@ -30,6 +30,7 @@ var product_request_validator_1 = require("../../validator/product.request.valid
 var routes = (0, express_1.Router)();
 var validator = new product_request_validator_1.ProductRequestValidator();
 routes.route('/').get(controllers.getAll);
+routes.route('/top').get(controllers.getTop);
 routes.route('/:id').get(controllers.getOne);
 routes.route('/create').post(authenticate_1.AuthenticatedUser, validator.validateCreate, controllers.create);
 exports["default"] = routes;

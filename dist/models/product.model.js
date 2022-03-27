@@ -88,9 +88,47 @@ var ProductStore = /** @class */ (function (_super) {
         });
     };
     ;
-    ProductStore.prototype.topProducts = function (limit) {
+    ProductStore.prototype.getProductWithCategoryExists = function (category_id) {
+        if (category_id === void 0) { category_id = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var conn, userQuery, e_2;
+            var conn, productQuery, productData, userQuery, e_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 1:
+                        conn = _a.sent();
+                        productQuery = "select * from ".concat(this.tableName, " ");
+                        productData = [];
+                        userQuery = void 0;
+                        if (!category_id) return [3 /*break*/, 3];
+                        productQuery += 'where category_id = ($1)';
+                        console.log(productQuery);
+                        return [4 /*yield*/, database_1["default"].query(productQuery, [category_id])];
+                    case 2:
+                        userQuery = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3: return [4 /*yield*/, database_1["default"].query(productQuery)];
+                    case 4:
+                        userQuery = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        conn.release();
+                        return [2 /*return*/, userQuery.rows];
+                    case 6:
+                        e_2 = _a.sent();
+                        throw new Error("unable to create product with error : ".concat(e_2.message));
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    ProductStore.prototype.topProducts = function (limit) {
+        if (limit === void 0) { limit = 5; }
+        return __awaiter(this, void 0, void 0, function () {
+            var conn, userQuery, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -98,14 +136,14 @@ var ProductStore = /** @class */ (function (_super) {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        return [4 /*yield*/, database_1["default"].query("select * from  ".concat(this.tableName, " "))];
+                        return [4 /*yield*/, database_1["default"].query("select p.*, sum(op.product_quantity) number_of_sale from  order_products op\n                 inner join products p on op.product_id = p.id\n                 group by p.id order by number_of_sale desc limit ($1)", [limit])];
                     case 2:
                         userQuery = _a.sent();
                         conn.release();
                         return [2 /*return*/, userQuery.rows];
                     case 3:
-                        e_2 = _a.sent();
-                        throw new Error("unable to create product with error : ".concat(e_2.message));
+                        e_3 = _a.sent();
+                        throw new Error("unable to get top product with error : ".concat(e_3.message));
                     case 4: return [2 /*return*/];
                 }
             });

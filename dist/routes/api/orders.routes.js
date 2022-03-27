@@ -30,7 +30,9 @@ var order_request_validator_1 = require("../../validator/order.request.validator
 var routes = (0, express_1.Router)();
 var validator = new order_request_validator_1.OrderRequestValidator();
 // routes.route('/').get(controllers.getAll);
-routes.route('/:user_id').get(authenticate_1.AuthenticatedUser, controllers.getOrderByUser);
+routes.route('/:user_id').get(authenticate_1.AuthenticatedUser, validator.validateUserOrders, controllers.getOrderByUser);
+routes.route('/:user_id/filter').get(authenticate_1.AuthenticatedUser, controllers.getOrderByUser);
 routes.route('/create').post(authenticate_1.AuthenticatedUser, validator.validateCreate, controllers.create);
-routes.route('/:id/complete').post(authenticate_1.AuthenticatedUser, validator.validateComplete, controllers.completeOrder);
+routes.route('/:id/complete').post(authenticate_1.AuthenticatedUser, validator.validateOrderParam, controllers.completeOrder);
+routes.route('/:id/details').get(authenticate_1.AuthenticatedUser, validator.validateOrderParam, controllers.getOrderDetails);
 exports["default"] = routes;

@@ -12,7 +12,7 @@ export const getAll = async (req : Request, res : Response, next: NextFunction) 
 
     try {
 
-        const productData = await productStore.getAll();
+        const productData = await productStore.getProductWithCategoryExists(req.body.category_id);
         res.json({
             status: 'success',
             data: productData || []
@@ -43,6 +43,23 @@ export const getOne = async (req : Request, res : Response, next: NextFunction) 
 
 }
 
+
+export const getTop = async (_ : Request, res : Response, next: NextFunction) => {
+
+  try {
+      console.log('top')
+      const productData = await productStore.topProducts();
+
+      res.json({
+          status: 'success',
+          data: productData || []
+        })
+
+  } catch (err) {
+      next(err)
+    }
+
+}
 
 export const create = async (req : Request, res : Response, next: NextFunction) => {
 

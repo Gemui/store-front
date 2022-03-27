@@ -1,4 +1,5 @@
 import { body, check, checkSchema, param } from "express-validator";
+import OrderStatus from "../enums/orderStatus.enum";
 import { OrderStore } from "../models/order.model";
 import { ProductStore } from "../models/product.model";
 import { UserStore } from "../models/user.model";
@@ -31,13 +32,30 @@ export class OrderRequestValidator {
     ];
     
 
-    public validateComplete = [
+    public validateOrderParam = [
         param('id').exists().bail().notEmpty().bail().custom( async (value) => {
-            const isUserExists = await orderStore.getByColumn('id',value);
-            if(!isUserExists) {
+            const isOrderExists = await orderStore.getByColumn('id',value);
+            if(!isOrderExists) {
                 return Promise.reject(`order_id ${value} not valid`)
             }
         } ),
+    ]
+    
+    public validateUserOrders = [
+        param('user_id').exists().bail().notEmpty().bail().custom( async (value) => {
+            const isUserExists = await userStore.getByColumn('id',value);
+            if(!isUserExists) {
+                return Promise.reject(`user_id ${value} not valid`)
+            }
+        } ),
+        check('order_status')
+        .custom((value) => {
+            if(value && !Object.values(OrderStatus).includes(value)) {
+
+                return false;
+            }
+            return true;
+        })
     ]
 
 }

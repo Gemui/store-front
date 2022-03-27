@@ -8,6 +8,7 @@ const validator = new  ProductRequestValidator();
 
 
 routes.route('/').get(controllers.getAll);
+routes.route('/top').get(controllers.getTop);
 routes.route('/:id').get(controllers.getOne);
 routes.route('/create').post(AuthenticatedUser, validator.validateCreate ,controllers.create);
 

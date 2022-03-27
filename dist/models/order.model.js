@@ -102,7 +102,6 @@ var OrderStore = /** @class */ (function (_super) {
                         return [3 /*break*/, 3];
                     case 7:
                         conn.release();
-                        console.log(createdProducts);
                         orderData['orderProducts'] = createdProducts;
                         console.log(orderData);
                         return [2 /*return*/, orderData];
@@ -134,6 +133,65 @@ var OrderStore = /** @class */ (function (_super) {
                         e_2 = _a.sent();
                         throw new Error("unable to complete order with error : ".concat(e_2.message));
                     case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    OrderStore.prototype.getUserOrders = function (user_id, status) {
+        if (status === void 0) { status = null; }
+        return __awaiter(this, void 0, void 0, function () {
+            var conn, queryData, clientQuery, userOrders, e_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 1:
+                        conn = _a.sent();
+                        queryData = [user_id];
+                        clientQuery = "select * from orders where user_id = ($1)";
+                        if (status) {
+                            clientQuery += 'and status = ($2)';
+                            queryData.push(status);
+                        }
+                        return [4 /*yield*/, database_1["default"].query(clientQuery, queryData)];
+                    case 2:
+                        userOrders = _a.sent();
+                        conn.release();
+                        return [2 /*return*/, userOrders.rows];
+                    case 3:
+                        e_3 = _a.sent();
+                        throw new Error("unable to getUserOrders with error : ".concat(e_3.message));
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    OrderStore.prototype.getOrderDetails = function (order_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var conn, order, _a, e_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 1:
+                        conn = _b.sent();
+                        return [4 /*yield*/, this.getByColumn('id', order_id)];
+                    case 2:
+                        order = _b.sent();
+                        _a = order;
+                        return [4 /*yield*/, conn.query('select * from order_products where order_id = ($1)', [order.id])];
+                    case 3:
+                        _a.orderProducts = (_b.sent()).rows;
+                        conn.release();
+                        return [2 /*return*/, order];
+                    case 4:
+                        e_4 = _b.sent();
+                        throw new Error("unable to getOrderDetails with error : ".concat(e_4.message));
+                    case 5: return [2 /*return*/];
                 }
             });
         });

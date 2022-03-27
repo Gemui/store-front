@@ -35,9 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.OrderRequestValidator = void 0;
 var express_validator_1 = require("express-validator");
+var orderStatus_enum_1 = __importDefault(require("../enums/orderStatus.enum"));
 var order_model_1 = require("../models/order.model");
 var product_model_1 = require("../models/product.model");
 var user_model_1 = require("../models/user.model");
@@ -82,21 +86,44 @@ var OrderRequestValidator = /** @class */ (function () {
                 .bail().isNumeric()
                 .bail().custom(function (value) { return value > 0 && value < 10000; }),
         ];
-        this.validateComplete = [
+        this.validateOrderParam = [
             (0, express_validator_1.param)('id').exists().bail().notEmpty().bail().custom(function (value) { return __awaiter(_this, void 0, void 0, function () {
-                var isUserExists;
+                var isOrderExists;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, orderStore.getByColumn('id', value)];
                         case 1:
-                            isUserExists = _a.sent();
-                            if (!isUserExists) {
+                            isOrderExists = _a.sent();
+                            if (!isOrderExists) {
                                 return [2 /*return*/, Promise.reject("order_id ".concat(value, " not valid"))];
                             }
                             return [2 /*return*/];
                     }
                 });
             }); }),
+        ];
+        this.validateUserOrders = [
+            (0, express_validator_1.param)('user_id').exists().bail().notEmpty().bail().custom(function (value) { return __awaiter(_this, void 0, void 0, function () {
+                var isUserExists;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, userStore.getByColumn('id', value)];
+                        case 1:
+                            isUserExists = _a.sent();
+                            if (!isUserExists) {
+                                return [2 /*return*/, Promise.reject("user_id ".concat(value, " not valid"))];
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            }); }),
+            (0, express_validator_1.check)('order_status')
+                .custom(function (value) {
+                if (value && !Object.values(orderStatus_enum_1["default"]).includes(value)) {
+                    return false;
+                }
+                return true;
+            })
         ];
     }
     return OrderRequestValidator;

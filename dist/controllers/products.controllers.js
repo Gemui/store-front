@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.create = exports.getOne = exports.getAll = void 0;
+exports.create = exports.getTop = exports.getOne = exports.getAll = void 0;
 var express_validator_1 = require("express-validator");
 var product_model_1 = require("../models/product.model");
 var productStore = new product_model_1.ProductStore();
@@ -46,7 +46,7 @@ var getAll = function (req, res, next) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, productStore.getAll()];
+                return [4 /*yield*/, productStore.getProductWithCategoryExists(req.body.category_id)];
             case 1:
                 productData = _a.sent();
                 res.json({
@@ -89,8 +89,32 @@ var getOne = function (req, res, next) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.getOne = getOne;
+var getTop = function (_, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var productData, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                console.log('top');
+                return [4 /*yield*/, productStore.topProducts()];
+            case 1:
+                productData = _a.sent();
+                res.json({
+                    status: 'success',
+                    data: productData || []
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                next(err_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getTop = getTop;
 var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var errors, productData, createProduct, err_3;
+    var errors, productData, createProduct, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -113,8 +137,8 @@ var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 });
                 return [3 /*break*/, 3];
             case 2:
-                err_3 = _a.sent();
-                next(err_3);
+                err_4 = _a.sent();
+                next(err_4);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import Client from "../database";
 import Product from "../types/product.type";
 import { Model } from "./model";
@@ -8,7 +9,7 @@ export class ProductStore extends Model {
 
     tableName = 'products';
 
-    async create(product : Product): Promise<Product|undefined> {
+    async create(product : Product): Promise<Product|void> {
 
         try {
 
@@ -29,24 +30,59 @@ export class ProductStore extends Model {
 
 
     };
-
-
-
-
-    async topProducts(limit: number): Promise<Product[]|undefined> {
+    
+    async getProductWithCategoryExists(category_id : number|null = null): Promise<Product[]|void> {
 
         try {
 
             const conn = await Client.connect();
-            //TODO write query to top dynamic limit
-            const userQuery = await Client.query(`select * from  ${this.tableName} `);
+            let productQuery = `select * from ${this.tableName} `;
+            const productData = [];
+            let userQuery : QueryResult;
+            if(category_id) {
+
+                productQuery += 'where category_id = ($1)'
+                console.log(productQuery);
+                 userQuery = await Client.query(productQuery, [category_id]);
+
+            } else {
+                userQuery = await Client.query(productQuery);
+
+            }
+            
 
             conn.release();
+
             return  userQuery.rows;
     
 
         } catch(e) {
             throw new Error(`unable to create product with error : ${(e as Error).message}`)
+
+        }
+
+
+    };
+
+
+
+
+    async topProducts(limit = 5): Promise<Product[]|void> {
+
+        try {
+
+            const conn = await Client.connect();
+
+            const userQuery = await Client.query(
+                `select p.*, sum(op.product_quantity) number_of_sale from  order_products op
+                 inner join products p on op.product_id = p.id
+                 group by p.id order by number_of_sale desc limit ($1)`,[limit]);
+
+            conn.release();
+            return  userQuery.rows;
+
+        } catch(e) {
+            throw new Error(`unable to get top product with error : ${(e as Error).message}`)
 
         }
 

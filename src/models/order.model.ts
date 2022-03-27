@@ -40,8 +40,6 @@ export class OrderStore extends Model {
 
 
             conn.release();
-
-            console.log(createdProducts);
         
             orderData['orderProducts'] = createdProducts;
             console.log(orderData);
@@ -72,6 +70,58 @@ export class OrderStore extends Model {
 
 
     };
+    
+
+    async getUserOrders(user_id : number, status : OrderStatus|null = null): Promise<Order[]> {
+
+        try {
+
+            const conn = await Client.connect();
+            const queryData: Array<number|OrderStatus> = [user_id];
+            let clientQuery = `select * from orders where user_id = ($1)`;
+
+            if (status) {
+                clientQuery +=  'and status = ($2)';
+                queryData.push(status);
+            }
+            
+            const userOrders = await Client.query(clientQuery,queryData);
+
+            conn.release();
+
+            return userOrders.rows;
+
+        } catch(e) {
+            throw new Error(`unable to getUserOrders with error : ${(e as Error).message}`)
+
+        }
+
+
+    };
+    
+
+    
+    async getOrderDetails(order_id : number): Promise<Order> {
+
+        try {
+
+            const conn = await Client.connect();
+            const order = await this.getByColumn('id',order_id) as unknown as Order;
+            order.orderProducts = (await conn.query('select * from order_products where order_id = ($1)',[order.id])).rows as unknown as OrderProduct[];
+            conn.release();
+
+            return order;
+
+        } catch(e) {
+            throw new Error(`unable to getOrderDetails with error : ${(e as Error).message}`)
+
+        }
+
+
+    };
+    
+
+
 
 
 }

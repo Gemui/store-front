@@ -11,11 +11,16 @@ const orderStore = new OrderStore();
 
 
 
-export const getOrderByUser = async (req : Request, res : Response, next: NextFunction): Promise<Response|undefined> => {
+export const getOrderByUser = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
     try {
 
-        const orderData = await orderStore.getManyByColumn('user_id',req.params.user_id);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+      }
+
+        const orderData = await orderStore.getUserOrders(Number(req.params.user_id), req.body.order_status);
         if (! orderData) {
           return res.json({ status: 'failed', 'message' : 'no orders found for this user id'});
         }
@@ -30,9 +35,13 @@ export const getOrderByUser = async (req : Request, res : Response, next: NextFu
 
 }
 
-export const getOne = async (req : Request, res : Response, next: NextFunction): Promise<Response|undefined> => {
+export const getOne = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+      }
 
         const orderData = await orderStore.getByColumn('id',req.params.id as unknown as number);
         if (! orderData) {
@@ -49,8 +58,25 @@ export const getOne = async (req : Request, res : Response, next: NextFunction):
 
 }
 
+export const getOrderDetails = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
-export const create = async (req : Request, res : Response, next: NextFunction): Promise<Response|undefined> => {
+  try {
+
+      const orderData = await orderStore.getOrderDetails(Number(req.params.id));
+
+      res.json({
+          status: 'success',
+          data: orderData || {}
+        })
+
+  } catch (err) {
+      next(err)
+    }
+
+}
+
+
+export const create = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
     try {
 
@@ -79,7 +105,7 @@ export const create = async (req : Request, res : Response, next: NextFunction):
 }
 
 
-export const completeOrder = async (req : Request, res : Response, next: NextFunction): Promise<Response|undefined> => {
+export const completeOrder = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
   try {
 
