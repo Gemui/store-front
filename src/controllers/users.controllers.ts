@@ -10,7 +10,7 @@ const userStore = new UserStore();
 
 
 
-export const getAll = async (req : Request, res : Response, next: NextFunction) => {
+export const getAll = async (_ : Request, res : Response, next: NextFunction) => {
 
     try {
 
@@ -26,7 +26,7 @@ export const getAll = async (req : Request, res : Response, next: NextFunction) 
 
 }
 
-export const login =  async (req: Request, res: Response): Promise<Response|undefined> => {
+export const login =  async (req: Request, res: Response, next : NextFunction): Promise<Response|undefined> => {
 
     try {
 
@@ -36,23 +36,21 @@ export const login =  async (req: Request, res: Response): Promise<Response|unde
         }
         
         const data = await userStore.authenticate(req.body.username, req.body.password);
-        console.log(data);
         if(!data) {
-            res.json({'status' : 'success', 'message': 'invalid user data'}).status(401);
+            return res.status(401).json({'status' : 'failed', 'message': 'invalid user data'});
 
         }
         try {
             const token = jwt.sign({ user : data}, process.env.SECRET_TOKEN as unknown as string);
 
-            res.json({'status' : 'success','message' : 'success', 'user': data, 'token' : token});
+            res.json({'status' : 'success', 'user': data, 'token' : token});
         } catch (e) {
-            console.log('failed to create token');
+            res.status(401).json({'status' : 'failed','message' : 'invalid data'});
         }
           
   
       } catch (err) {
-          res.status(401)
-          res.json(err)
+          next(err);
       }
 
 }
@@ -79,14 +77,14 @@ export const register =  async (req: Request, res: Response, next: NextFunction)
             const userExists = await userStore.getByColumn('username', userData.username) as unknown as User;
 
             if (userExists != null) {
-                res.json({'success' : false, 'message': 'username exists'}).status(422);
+                res.json({'status' : 'failed', 'message': 'username exists'}).status(422);
                 return;
 
             }
 
             const data = await userStore.create(userData);
 
-            res.json({'message' : 'success', 'user': data});
+            res.json({'status' : 'success', 'user': data});
   
       } catch (err) {
           next(err);

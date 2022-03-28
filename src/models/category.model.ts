@@ -8,7 +8,7 @@ export class CategoryStore extends Model {
 
     tableName = 'categories';
 
-    async create(category : Category): Promise<Category|undefined> {
+    async create(category : Category): Promise<Category|void> {
 
         try {
 

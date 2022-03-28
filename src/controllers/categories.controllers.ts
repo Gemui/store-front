@@ -13,7 +13,6 @@ export const getAll = async (req : Request, res : Response, next: NextFunction) 
     try {
 
         const categoryData = await categoryStore.getAll();
-        console.log('access category');
         res.json({
             status: 'success',
             data: categoryData || []

@@ -6,4 +6,4 @@ type User = {
   lastName : string;
 }
 
-export default User
+export default User;
