@@ -88,8 +88,8 @@ export const register =  async (req: Request, res: Response, next: NextFunction)
         const userData : User = {
                 username : req.body.username,
                 password :  req.body.password,
-                firstName :  req.body.firstName,
-                lastName :  req.body.lastName,
+                firstname :  req.body.firstname,
+                lastname :  req.body.lastname,
             }
 
             const userExists = await userStore.getByColumn('username', userData.username) as unknown as User;

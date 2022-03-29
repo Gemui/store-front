@@ -92,7 +92,7 @@ export const create = async (req : Request, res : Response, next: NextFunction):
 
         const orderData: Order = {
           user_id : req.body.user_id,
-          status : req.body.price,
+          status : OrderStatus.active,
         }
 
         const createdOrder = await orderStore.create(orderData, req.body.products as unknown as OrderProduct[]);
@@ -128,7 +128,7 @@ export const completeOrder = async (req : Request, res : Response, next: NextFun
       })
 
     }
-    await orderStore.completeOrder(orderData);
+    await orderStore.completeOrder(Number(orderData.id));
     res.json({
         status: 'success',
         message: 'order completed successfully'

@@ -35,7 +35,7 @@ class OrderStore extends model_1.Model {
                     let orderProduct = orderProducts[i];
                     const databaseProduct = yield productStore.getByColumn('id', orderProduct.product_id);
                     let insertedProduct = (yield database_1.default.
-                        query('insert into order_products (order_id, product_id, product_quantity, product_price) values ( ($1), ($2), ($3), ($4) ) returning *', [orderData.id, orderProduct.product_id, orderProduct.product_quantity, databaseProduct.price])).rows;
+                        query('insert into order_products (order_id, product_id, product_quantity, product_price) values ( ($1), ($2), ($3), ($4) ) returning *', [orderData.id, orderProduct.product_id, orderProduct.product_quantity, databaseProduct.price])).rows[0];
                     createdProducts.push(insertedProduct);
                 }
                 conn.release();
@@ -48,11 +48,11 @@ class OrderStore extends model_1.Model {
         });
     }
     ;
-    completeOrder(order) {
+    completeOrder(orderId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                yield database_1.default.query(`update ${this.tableName} set status =  ($1) where id = ($2)`, [orderStatus_enum_1.default.completed, order.id]);
+                yield database_1.default.query(`update ${this.tableName} set status =  ($1) where id = ($2)`, [orderStatus_enum_1.default.completed, orderId]);
                 conn.release();
             }
             catch (e) {

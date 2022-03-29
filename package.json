@@ -9,7 +9,9 @@
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess \"node ./dist/server.js\"",
     "test": "export ENV=test && db-migrate up --env test && tsc && jasmine && db-migrate down",
     "test:window": "set ENV=test && db-migrate up --env test && tsc && jasmine && db-migrate down",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "db-up": "db-migrate up",
+    "db-down": "db-migrate down"
   },
   "author": "Udacity",
   "license": "ISC",

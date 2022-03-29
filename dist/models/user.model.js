@@ -47,7 +47,7 @@ class UserStore extends model_1.Model {
             try {
                 const conn = yield database_1.default.connect();
                 const hash = bcrypt_1.default.hashSync(user.password + process.env.BCRYPT_PASSWORD, Number(process.env.SALT_ROUNDS));
-                const userQuery = yield database_1.default.query('insert into users (username, password, firstName, lastName) values ( ($1) ,($2), ($3), ($4) ) returning *', [user.username, hash, user.firstName, user.lastName]);
+                const userQuery = yield database_1.default.query('insert into users (username, password, firstname, lastname) values ( ($1) ,($2), ($3), ($4) ) returning *', [user.username, hash, user.firstname, user.lastname]);
                 conn.release();
                 return userQuery.rows[0];
             }

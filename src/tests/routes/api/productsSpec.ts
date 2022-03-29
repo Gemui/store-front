@@ -19,8 +19,8 @@ describe('Products End Point', () => {
     const user = {
         username : 'username',
         password : 'userpassword',
-        firstName : 'first',
-        lastName : 'second'
+        firstname : 'first',
+        lastname : 'second'
     } as User;
     let categoryData : Category;
     beforeAll(async (): Promise<void> => {

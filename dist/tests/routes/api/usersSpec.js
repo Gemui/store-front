@@ -23,12 +23,11 @@ describe('User End Point', () => {
     const user = {
         username: 'username',
         password: 'userpassword',
-        firstName: 'first',
-        lastName: 'second'
+        firstname: 'first',
+        lastname: 'second'
     };
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         const createdUser = yield userModel.create(user);
-        console.log(createdUser);
         user.id = createdUser.id;
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,8 +75,8 @@ describe('User End Point', () => {
                     .set('Authorization', `Bearer ${userToken}`).send({
                     username: `${user.username}${i}`,
                     password: user.password,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
                 });
                 expect(result.status).toBe(200);
                 expect(result.body.status).toEqual('success');
@@ -107,13 +106,12 @@ describe('User End Point', () => {
                 .get(`/api/users/${user.id}`)
                 .set('Content-type', 'application/json')
                 .set('Authorization', `Bearer ${userToken}`);
-            console.log(result.body, user.id);
             expect(result.status).toBe(200);
             expect(result.body.status).toEqual('success');
             expect(result.body.data.id).toEqual(user.id);
             expect(result.body.data.username).toEqual(user.username);
-            expect(result.body.data.firstname).toEqual(user.firstName);
-            expect(result.body.data.lastname).toEqual(user.lastName);
+            expect(result.body.data.firstname).toEqual(user.firstname);
+            expect(result.body.data.lastname).toEqual(user.lastname);
         }));
     });
 });

@@ -82,7 +82,7 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         const orderData = {
             user_id: req.body.user_id,
-            status: req.body.price,
+            status: orderStatus_enum_1.default.active,
         };
         const createdOrder = yield orderStore.create(orderData, req.body.products);
         res.json({
@@ -108,7 +108,7 @@ const completeOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 message: 'order already completed'
             });
         }
-        yield orderStore.completeOrder(orderData);
+        yield orderStore.completeOrder(Number(orderData.id));
         res.json({
             status: 'success',
             message: 'order completed successfully'

@@ -12,7 +12,7 @@ export class OrderStore extends Model {
 
     tableName = 'orders';
 
-    async create(order : Order, orderProducts: OrderProduct[]): Promise<Order|undefined> {
+    async create(order : Order, orderProducts: OrderProduct[]): Promise<Order|void> {
 
         try {
 
@@ -32,7 +32,7 @@ export class OrderStore extends Model {
 
                 let insertedProduct = (await Client.
                 query('insert into order_products (order_id, product_id, product_quantity, product_price) values ( ($1), ($2), ($3), ($4) ) returning *',
-                [orderData.id, orderProduct.product_id, orderProduct.product_quantity, databaseProduct.price])).rows as unknown as OrderProduct
+                [orderData.id, orderProduct.product_id, orderProduct.product_quantity, databaseProduct.price])).rows[0] as unknown as OrderProduct
 
                 createdProducts.push( insertedProduct );
              }
@@ -52,12 +52,12 @@ export class OrderStore extends Model {
 
     };
 
-    async completeOrder(order : Order): Promise<void> {
+    async completeOrder(orderId : number): Promise<void> {
 
         try {
 
             const conn = await Client.connect();
-            await Client.query(`update ${this.tableName} set status =  ($1) where id = ($2)`,[OrderStatus.completed, order.id]);
+            await Client.query(`update ${this.tableName} set status =  ($1) where id = ($2)`,[OrderStatus.completed, orderId]);
             conn.release();
 
 

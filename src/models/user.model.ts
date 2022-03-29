@@ -47,8 +47,8 @@ export class UserStore extends Model {
 
             const hash : string = bcrypt.hashSync(user.password + process.env.BCRYPT_PASSWORD, Number(process.env.SALT_ROUNDS))
     
-            const userQuery = await Client.query('insert into users (username, password, firstName, lastName) values ( ($1) ,($2), ($3), ($4) ) returning *',
-            [user.username, hash, user.firstName, user.lastName]);
+            const userQuery = await Client.query('insert into users (username, password, firstname, lastname) values ( ($1) ,($2), ($3), ($4) ) returning *',
+            [user.username, hash, user.firstname, user.lastname]);
             conn.release();
             return  userQuery.rows[0];
     

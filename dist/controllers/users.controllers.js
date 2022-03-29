@@ -79,8 +79,8 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         const userData = {
             username: req.body.username,
             password: req.body.password,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
         };
         const userExists = yield userStore.getByColumn('username', userData.username);
         if (userExists != null) {

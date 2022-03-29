@@ -30,8 +30,8 @@ describe('Orders Routes', () => {
     const user = {
         username: 'username',
         password: 'userpassword',
-        firstName: 'first',
-        lastName: 'second'
+        firstname: 'first',
+        lastname: 'second'
     };
     const product = {
         name: 'product-0',
