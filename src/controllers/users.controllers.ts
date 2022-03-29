@@ -27,7 +27,11 @@ export const getOne = async (
   }
 }
 
-export const getAll = async (_: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+export const getAll = async (
+  _: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
     const userData = await userStore.getAll()
     res.json({

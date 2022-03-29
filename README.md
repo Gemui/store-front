@@ -12,19 +12,20 @@ Postgres created database
 
 * `yarn` to install dependencies
 * `yarn db-up ` to migrate database schema
-
-* Copy `.env.example `to `.env` and set database connection
+* Copy `.env.example `to `.env` and set database connection information
 * `yarn build` to build the app
 
 ## Start Server
 
 ```shell
-node ./dist
+node ./dist/server.js
 ```
 
 ### Endpoint Base Url
 
  http://localhost:3000/api
+
+#### Test
 
 ```shell
 yarn test

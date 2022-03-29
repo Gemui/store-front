@@ -6,7 +6,7 @@ export function AuthenticatedUser(
   req: Request,
   res: Response,
   next: express.NextFunction
-) {
+): void {
   try {
     const authorizationHeader = req.headers.authorization
     if (authorizationHeader) {

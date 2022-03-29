@@ -48,7 +48,11 @@ export const getOne = async (
   }
 }
 
-export const getTop = async (_: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+export const getTop = async (
+  _: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
     const productData = await productStore.topProducts()
 
