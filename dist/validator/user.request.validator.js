@@ -17,16 +17,40 @@ class UserRequestValidator {
     constructor() {
         this.validateRegister = [
             (0, express_validator_1.body)('username', 'userName should be exists and not empty').exists(),
-            (0, express_validator_1.body)('password', 'Invalid password should be 6 character or more').exists().bail().isLength({ min: 6 }),
-            (0, express_validator_1.body)('firstname', 'firstname should exists and length betwenn 2 to 5').exists().bail().notEmpty().bail().isLength({ min: 2, max: 50 }),
-            (0, express_validator_1.body)('lastname').exists().bail().notEmpty().bail().isLength({ min: 2, max: 50 })
+            (0, express_validator_1.body)('password', 'Invalid password should be 6 character or more')
+                .exists()
+                .bail()
+                .isLength({ min: 6 }),
+            (0, express_validator_1.body)('firstname', 'firstname should exists and length betwenn 2 to 5')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .isLength({ min: 2, max: 50 }),
+            (0, express_validator_1.body)('lastname')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .isLength({ min: 2, max: 50 }),
         ];
         this.validateLogin = [
-            (0, express_validator_1.body)('username', 'userName should be exists and not empty').exists().bail().notEmpty(),
-            (0, express_validator_1.body)('password', 'Invalid password should be 6 character or more').exists().bail().isLength({ min: 6 })
+            (0, express_validator_1.body)('username', 'userName should be exists and not empty')
+                .exists()
+                .bail()
+                .notEmpty(),
+            (0, express_validator_1.body)('password', 'Invalid password should be 6 character or more')
+                .exists()
+                .bail()
+                .isLength({ min: 6 }),
         ];
         this.validateUserId = [
-            (0, express_validator_1.param)('id').exists().bail().notEmpty().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.param)('id')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isUserExists = yield userStore.getByColumn('id', value);
                 if (!isUserExists) {
                     return Promise.reject(`user_id ${value} not valid`);

@@ -31,7 +31,6 @@ class Model {
             }
         });
     }
-    ;
     getByColumn(column, value, operator = '=') {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -48,7 +47,6 @@ class Model {
             }
         });
     }
-    ;
     getManyByColumn(column, value, operator = '=') {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -65,6 +63,5 @@ class Model {
             }
         });
     }
-    ;
 }
 exports.Model = Model;

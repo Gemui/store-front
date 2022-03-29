@@ -1,6 +1,6 @@
 type OrderStatus = {
-  active : 'active';
-  completed : 'completed';
+  active: 'active'
+  completed: 'completed'
 }
 
-export default OrderStatus;
+export default OrderStatus

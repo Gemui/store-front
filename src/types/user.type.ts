@@ -1,9 +1,9 @@
 type User = {
-  id? : number;
-  username : string;
-  password : string;
-  firstname : string;
-  lastname : string;
+  id?: number
+  username: string
+  password: string
+  firstname: string
+  lastname: string
 }
 
-export default User;
+export default User

@@ -18,7 +18,7 @@ const getAll = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const categoryData = yield categoryStore.getAll();
         res.json({
             status: 'success',
-            data: categoryData || []
+            data: categoryData || [],
         });
     }
     catch (err) {
@@ -33,12 +33,12 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(422).json({ errors: errors.array() });
         }
         const categoryData = {
-            name: req.body.name
+            name: req.body.name,
         };
         const createCategory = yield categoryStore.create(categoryData);
         res.json({
             status: 'success',
-            data: createCategory || []
+            data: createCategory || [],
         });
     }
     catch (err) {

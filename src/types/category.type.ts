@@ -1,6 +1,6 @@
 type Category = {
-  id? : number;
-  name : string;
+  id?: number
+  name: string
 }
 
-export default Category;
+export default Category

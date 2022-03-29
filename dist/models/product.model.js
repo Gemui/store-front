@@ -34,13 +34,11 @@ class ProductStore extends model_1.Model {
             }
         });
     }
-    ;
     getProductWithCategoryExists(category_id = null) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
                 let productQuery = `select * from ${this.tableName} `;
-                const productData = [];
                 let userQuery;
                 if (category_id) {
                     productQuery += 'where category_id = ($1)';
@@ -57,7 +55,6 @@ class ProductStore extends model_1.Model {
             }
         });
     }
-    ;
     topProducts(limit = 5) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -73,6 +70,5 @@ class ProductStore extends model_1.Model {
             }
         });
     }
-    ;
 }
 exports.ProductStore = ProductStore;

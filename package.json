@@ -11,7 +11,10 @@
     "test:window": "set ENV=test && db-migrate up --env test && tsc && jasmine && db-migrate down",
     "tsc": "tsc",
     "db-up": "db-migrate up",
-    "db-down": "db-migrate down"
+    "db-down": "db-migrate down",
+    "prettier" : "prettier --write src/**/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix"
   },
   "author": "Udacity",
   "license": "ISC",

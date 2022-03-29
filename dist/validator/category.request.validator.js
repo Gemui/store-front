@@ -16,7 +16,12 @@ const categoryStore = new category_model_1.CategoryStore();
 class CategoryRequestValidator {
     constructor() {
         this.validateCreate = [
-            (0, express_validator_1.body)('name', 'category name is required').exists().bail().notEmpty().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.body)('name', 'category name is required')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isCategoryExists = yield categoryStore.getByColumn('name', value);
                 if (isCategoryExists) {
                     return Promise.reject(`category name ${value} already exists`);

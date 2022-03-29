@@ -31,11 +31,15 @@ class OrderStore extends model_1.Model {
              (user_id) values ( ($1) ) returning *`, [order.user_id]);
                 const orderData = orderQuery.rows[0];
                 const createdProducts = [];
-                for (var i = 0; i < orderProducts.length; i++) {
-                    let orderProduct = orderProducts[i];
-                    const databaseProduct = yield productStore.getByColumn('id', orderProduct.product_id);
-                    let insertedProduct = (yield database_1.default.
-                        query('insert into order_products (order_id, product_id, product_quantity, product_price) values ( ($1), ($2), ($3), ($4) ) returning *', [orderData.id, orderProduct.product_id, orderProduct.product_quantity, databaseProduct.price])).rows[0];
+                for (let i = 0; i < orderProducts.length; i++) {
+                    const orderProduct = orderProducts[i];
+                    const databaseProduct = (yield productStore.getByColumn('id', orderProduct.product_id));
+                    const insertedProduct = (yield database_1.default.query('insert into order_products (order_id, product_id, product_quantity, product_price) values ( ($1), ($2), ($3), ($4) ) returning *', [
+                        orderData.id,
+                        orderProduct.product_id,
+                        orderProduct.product_quantity,
+                        databaseProduct.price,
+                    ])).rows[0];
                     createdProducts.push(insertedProduct);
                 }
                 conn.release();
@@ -47,7 +51,6 @@ class OrderStore extends model_1.Model {
             }
         });
     }
-    ;
     completeOrder(orderId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -60,13 +63,12 @@ class OrderStore extends model_1.Model {
             }
         });
     }
-    ;
     getUserOrders(user_id, status = null) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
                 const queryData = [user_id];
-                let clientQuery = `select * from orders where user_id = ($1)`;
+                let clientQuery = 'select * from orders where user_id = ($1)';
                 if (status) {
                     clientQuery += 'and status = ($2)';
                     queryData.push(status);
@@ -80,13 +82,14 @@ class OrderStore extends model_1.Model {
             }
         });
     }
-    ;
     getOrderDetails(order_id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                const order = yield this.getByColumn('id', order_id);
-                order.orderProducts = (yield conn.query('select * from order_products where order_id = ($1)', [order.id])).rows;
+                const order = (yield this.getByColumn('id', order_id));
+                order.orderProducts = (yield conn.query('select * from order_products where order_id = ($1)', [
+                    order.id,
+                ])).rows;
                 conn.release();
                 return order;
             }
@@ -95,6 +98,5 @@ class OrderStore extends model_1.Model {
             }
         });
     }
-    ;
 }
 exports.OrderStore = OrderStore;

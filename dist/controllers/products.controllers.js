@@ -18,7 +18,7 @@ const getAll = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const productData = yield productStore.getProductWithCategoryExists(req.body.category_id);
         res.json({
             status: 'success',
-            data: productData || []
+            data: productData || [],
         });
     }
     catch (err) {
@@ -30,11 +30,13 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const productData = yield productStore.getByColumn('id', req.params.id);
         if (!productData) {
-            return res.status(403).json({ status: 'failed', 'message': 'Product not found' });
+            return res
+                .status(403)
+                .json({ status: 'failed', message: 'Product not found' });
         }
         res.json({
             status: 'success',
-            data: productData || {}
+            data: productData || {},
         });
     }
     catch (err) {
@@ -47,7 +49,7 @@ const getTop = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         const productData = yield productStore.topProducts();
         res.json({
             status: 'success',
-            data: productData || []
+            data: productData || [],
         });
     }
     catch (err) {
@@ -69,7 +71,7 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const createProduct = yield productStore.create(productData);
         res.json({
             status: 'success',
-            data: createProduct || []
+            data: createProduct || [],
         });
     }
     catch (err) {

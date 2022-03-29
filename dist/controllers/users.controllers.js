@@ -26,7 +26,7 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const userData = yield userStore.getByColumn('id', req.params.id);
         res.json({
             status: 'success',
-            data: userData
+            data: userData,
         });
     }
     catch (err) {
@@ -39,7 +39,7 @@ const getAll = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         const userData = yield userStore.getAll();
         res.json({
             status: 'success',
-            data: userData || []
+            data: userData || [],
         });
     }
     catch (err) {
@@ -55,14 +55,16 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         }
         const data = yield userStore.authenticate(req.body.username, req.body.password);
         if (!data) {
-            return res.status(401).json({ 'status': 'failed', 'message': 'invalid user data' });
+            return res
+                .status(401)
+                .json({ status: 'failed', message: 'invalid user data' });
         }
         try {
             const token = jsonwebtoken_1.default.sign({ user: data }, process.env.SECRET_TOKEN);
-            res.json({ 'status': 'success', 'user': data, 'token': token });
+            res.json({ status: 'success', user: data, token: token });
         }
         catch (e) {
-            res.status(401).json({ 'status': 'failed', 'message': 'invalid data' });
+            res.status(401).json({ status: 'failed', message: 'invalid data' });
         }
     }
     catch (err) {
@@ -82,13 +84,13 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
             firstname: req.body.firstname,
             lastname: req.body.lastname,
         };
-        const userExists = yield userStore.getByColumn('username', userData.username);
+        const userExists = (yield userStore.getByColumn('username', userData.username));
         if (userExists != null) {
-            res.json({ 'status': 'failed', 'message': 'username exists' }).status(422);
+            res.json({ status: 'failed', message: 'username exists' }).status(422);
             return;
         }
         const data = yield userStore.create(userData);
-        res.json({ 'status': 'success', 'user': data });
+        res.json({ status: 'success', user: data });
     }
     catch (err) {
         next(err);

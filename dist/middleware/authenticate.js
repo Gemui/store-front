@@ -14,10 +14,10 @@ function AuthenticatedUser(req, res, next) {
             next();
             return;
         }
-        res.json({ 'success': false, 'message': 'unauthenticated' }).status(401);
+        res.json({ success: false, message: 'unauthenticated' }).status(401);
     }
     catch (e) {
-        res.json({ 'success': false, 'message': 'unauthenticated' }).status(401);
+        res.json({ success: false, message: 'unauthenticated' }).status(401);
     }
 }
 exports.AuthenticatedUser = AuthenticatedUser;

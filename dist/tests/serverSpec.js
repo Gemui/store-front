@@ -12,26 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryStore = void 0;
-const database_1 = __importDefault(require("../database"));
-const model_1 = require("./model");
-class CategoryStore extends model_1.Model {
-    constructor() {
-        super(...arguments);
-        this.tableName = 'categories';
-    }
-    create(category) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const conn = yield database_1.default.connect();
-                const userQuery = yield database_1.default.query(`insert into ${this.tableName} (name) values ( ($1) ) returning *`, [category.name]);
-                conn.release();
-                return userQuery.rows[0];
-            }
-            catch (e) {
-                throw new Error(`unable to create category with error : ${e.message}`);
-            }
-        });
-    }
-}
-exports.CategoryStore = CategoryStore;
+const supertest_1 = __importDefault(require("supertest"));
+const server_1 = __importDefault(require("../server"));
+const request = (0, supertest_1.default)(server_1.default);
+describe('Test endpoint response', () => {
+    it('Test Main endpoint', () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield request.get('/');
+        expect(response.status).toBe(200);
+    }));
+});

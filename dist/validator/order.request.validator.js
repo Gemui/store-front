@@ -24,14 +24,22 @@ const orderStore = new order_model_1.OrderStore();
 class OrderRequestValidator {
     constructor() {
         this.validateCreate = [
-            (0, express_validator_1.body)('user_id', 'user_id should exists and valid').exists().bail().notEmpty().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.body)('user_id', 'user_id should exists and valid')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isUserExists = yield userStore.getByColumn('id', value);
                 if (!isUserExists) {
                     return Promise.reject(`user_id ${value} not valid`);
                 }
             })),
             (0, express_validator_1.body)('products', 'products should be an array').isArray(),
-            (0, express_validator_1.check)('products.*.product_id', 'product_id should be int and exists').isInt().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.check)('products.*.product_id', 'product_id should be int and exists')
+                .isInt()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isProductExists = yield productStore.getByColumn('id', value);
                 if (!isProductExists) {
                     return Promise.reject(`product_id ${value} not valid`);
@@ -39,11 +47,18 @@ class OrderRequestValidator {
             })),
             (0, express_validator_1.check)('products.*.product_quantity', 'product_quantity greater than 0 and less than 10000')
                 .exists()
-                .bail().isNumeric()
-                .bail().custom((value) => value > 0 && value < 10000),
+                .bail()
+                .isNumeric()
+                .bail()
+                .custom((value) => value > 0 && value < 10000),
         ];
         this.validateOrderParam = [
-            (0, express_validator_1.param)('id').exists().bail().notEmpty().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.param)('id')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isOrderExists = yield orderStore.getByColumn('id', value);
                 if (!isOrderExists) {
                     return Promise.reject(`order_id ${value} not valid`);
@@ -51,19 +66,23 @@ class OrderRequestValidator {
             })),
         ];
         this.validateUserOrders = [
-            (0, express_validator_1.param)('user_id').exists().bail().notEmpty().bail().custom((value) => __awaiter(this, void 0, void 0, function* () {
+            (0, express_validator_1.param)('user_id')
+                .exists()
+                .bail()
+                .notEmpty()
+                .bail()
+                .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isUserExists = yield userStore.getByColumn('id', value);
                 if (!isUserExists) {
                     return Promise.reject(`user_id ${value} not valid`);
                 }
             })),
-            (0, express_validator_1.check)('order_status')
-                .custom((value) => {
+            (0, express_validator_1.check)('order_status').custom((value) => {
                 if (value && !Object.values(orderStatus_enum_1.default).includes(value)) {
                     return false;
                 }
                 return true;
-            })
+            }),
         ];
     }
 }

@@ -25,11 +25,14 @@ const getOrderByUser = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         }
         const orderData = yield orderStore.getUserOrders(Number(req.params.user_id), req.body.order_status);
         if (!orderData) {
-            return res.json({ status: 'failed', 'message': 'no orders found for this user id' });
+            return res.json({
+                status: 'failed',
+                message: 'no orders found for this user id',
+            });
         }
         res.json({
             status: 'success',
-            data: orderData
+            data: orderData,
         });
     }
     catch (err) {
@@ -45,11 +48,13 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         const orderData = yield orderStore.getByColumn('id', req.params.id);
         if (!orderData) {
-            return res.status(403).json({ status: 'failed', 'message': 'Order not found' });
+            return res
+                .status(403)
+                .json({ status: 'failed', message: 'Order not found' });
         }
         res.json({
             status: 'success',
-            data: orderData || {}
+            data: orderData || {},
         });
     }
     catch (err) {
@@ -66,7 +71,7 @@ const getOrderDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         const orderData = yield orderStore.getOrderDetails(Number(req.params.id));
         res.json({
             status: 'success',
-            data: orderData || {}
+            data: orderData || {},
         });
     }
     catch (err) {
@@ -87,7 +92,7 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const createdOrder = yield orderStore.create(orderData, req.body.products);
         res.json({
             status: 'success',
-            data: createdOrder || []
+            data: createdOrder || [],
         });
     }
     catch (err) {
@@ -101,17 +106,17 @@ const completeOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
-        const orderData = yield orderStore.getByColumn('id', req.params.id);
+        const orderData = (yield orderStore.getByColumn('id', req.params.id));
         if (orderData.status == orderStatus_enum_1.default.completed) {
             return res.status(403).json({
                 status: 'failed',
-                message: 'order already completed'
+                message: 'order already completed',
             });
         }
         yield orderStore.completeOrder(Number(orderData.id));
         res.json({
             status: 'success',
-            message: 'order completed successfully'
+            message: 'order completed successfully',
         });
     }
     catch (err) {

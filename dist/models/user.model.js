@@ -41,7 +41,6 @@ class UserStore extends model_1.Model {
             }
         });
     }
-    ;
     create(user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -56,6 +55,5 @@ class UserStore extends model_1.Model {
             }
         });
     }
-    ;
 }
 exports.UserStore = UserStore;
