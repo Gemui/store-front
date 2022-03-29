@@ -17,12 +17,13 @@ describe('User End Point', () => {
         lastName : 'second'
     } as User;
 
-    beforeAll(async () => {
-        const createdUser = await userModel.create(user)
+    beforeAll(async (): Promise<void> => {
+        const createdUser = await userModel.create(user);
+        console.log(createdUser)
         user.id = createdUser.id;
         })
 
-    afterAll(async () => {
+    afterAll(async (): Promise<void> => {
     // clean db
     const connection = await Client.connect()
     await connection.query('DELETE FROM users');
@@ -31,7 +32,7 @@ describe('User End Point', () => {
 
 
     describe('test auth cycle', () => {
-        it('should able to login and get token', async () => {
+        it('should able to login and get token', async (): Promise<void> => {
             const result = await request.post('/api/users/login').set('Content-type', 'application/json').send({
                 username: user.username,
                 password: user.password,
@@ -70,7 +71,7 @@ describe('User End Point', () => {
     describe('Test Crud routes', () => {
 
 
-        it('Test create many users', async () => {
+        it('Test create many users', async (): Promise<void> => {
 
             for (let i = 1; i < 5; i++){
                 const result = await request
@@ -82,14 +83,13 @@ describe('User End Point', () => {
                     firstName : user.firstName,
                     lastName : user.lastName,
                  })
-                
                 expect(result.status).toBe(200)
                 expect(result.body.status).toEqual('success')
             }
 
         });
 
-        it('should list all users with count 5', async () => {
+        it('should list all users with count 5', async (): Promise<void> => {
             const result = await request
             .get('/api/users')
             .set('Content-type', 'application/json')
@@ -98,6 +98,36 @@ describe('User End Point', () => {
             expect(result.status).toBe(200)
             expect(result.body.status).toEqual('success')
             expect(userData.length).toEqual(5);
+
+        });
+
+
+        it('Test get user with wrong user_id should get error message with status 422 ', async (): Promise<void> => {
+
+                const result = await request
+                .get('/api/users/500000000')
+                .set('Content-type', 'application/json')
+                .set('Authorization', `Bearer ${userToken}`)
+                expect(result.status).toBe(422);
+                expect(result.body.errors[0].param).toEqual('id');
+                expect(result.body.errors[0].msg).toEqual('user_id 500000000 not valid');
+
+        });
+
+
+        it('Test get user data should return success with data and status 200 ', async (): Promise<void> => {
+
+                const result = await request
+                .get(`/api/users/${user.id}`)
+                .set('Content-type', 'application/json')
+                .set('Authorization', `Bearer ${userToken}`)
+                console.log(result.body, user.id)
+                expect(result.status).toBe(200);
+                expect(result.body.status).toEqual('success');
+                expect(result.body.data.id).toEqual(user.id);
+                expect(result.body.data.username).toEqual(user.username);
+                expect(result.body.data.firstname).toEqual(user.firstName);
+                expect(result.body.data.lastname).toEqual(user.lastName);
 
         });
 

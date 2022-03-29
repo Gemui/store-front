@@ -44,7 +44,6 @@ class ProductStore extends model_1.Model {
                 let userQuery;
                 if (category_id) {
                     productQuery += 'where category_id = ($1)';
-                    console.log(productQuery);
                     userQuery = yield database_1.default.query(productQuery, [category_id]);
                 }
                 else {

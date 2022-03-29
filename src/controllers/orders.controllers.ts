@@ -61,6 +61,10 @@ export const getOne = async (req : Request, res : Response, next: NextFunction):
 export const getOrderDetails = async (req : Request, res : Response, next: NextFunction): Promise<Response|void> => {
 
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
       const orderData = await orderStore.getOrderDetails(Number(req.params.id));
 
@@ -92,7 +96,6 @@ export const create = async (req : Request, res : Response, next: NextFunction):
         }
 
         const createdOrder = await orderStore.create(orderData, req.body.products as unknown as OrderProduct[]);
-        console.log(2,createdOrder);
         res.json({
             status: 'success',
             data: createdOrder || []

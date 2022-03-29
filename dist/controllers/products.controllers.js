@@ -44,7 +44,6 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.getOne = getOne;
 const getTop = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('top');
         const productData = yield productStore.topProducts();
         res.json({
             status: 'success',

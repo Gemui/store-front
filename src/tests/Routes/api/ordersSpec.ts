@@ -19,7 +19,7 @@ const productStore = new ProductStore()
 const orderStore = new OrderStore()
 const request = supertest(app)
 let userToken = '';
-describe('Products End Point', () => {
+describe('Orders Routes', () => {
 
     const user = {
         username : 'username',
@@ -33,9 +33,16 @@ describe('Products End Point', () => {
 
        } as Product
     
+       const order = {
+        user_id : user.id,
+        status : OrderStatus.active,
+
+       } as Order;
     let categoryData : Category;
     let productsData : Product[] = [];
-    beforeAll(async () => {
+
+
+    beforeAll(async (): Promise<void> => {
         const createdUser = await userModel.create(user)
         user.id = createdUser.id;
         const result = await request.post('/api/users/login').set('Content-type', 'application/json').send({
@@ -51,22 +58,31 @@ describe('Products End Point', () => {
         productsData.push( await productStore.create(product) as Product )
         product.name = 'product-10';
         productsData.push( await productStore.create(product) as Product )
-        console.log(productsData);
+
+        order.user_id = user.id as number
+        const orderResult = await orderStore.create( order, [ {
+            product_id : productsData[0].id,
+            product_price : 10,
+            product_quantity : 5
+        } as OrderProduct] ) as Order
+        order.id = orderResult.id;
+
         })
 
-    afterAll(async () => {
+    afterAll(async (): Promise<void> => {
     // clean db
     const connection = await Client.connect()
     await connection.query('DELETE FROM users');
     await connection.query('DELETE FROM categories');
     await connection.query('DELETE FROM products');
+    await connection.query('DELETE FROM order_products');
     connection.release()
     })
 
 
     describe('Test Crud routes', () => {
 
-        it('Test get user orders with wrong user_id 422 with error ', async () => {
+        it('Test get user orders with wrong user_id 422 with error ', async (): Promise<void> => {
 
             for (let i = 1; i <= 5; i++){
 
@@ -83,17 +99,9 @@ describe('Products End Point', () => {
         });
 
 
-        it('Test get user orders details should return all orders of user with status 200', async () => {
+        it('Test get user orders should return all orders of user with status 200', async (): Promise<void> => {
 
-               const order = await orderStore.create({
-                user_id : user.id,
-                status : OrderStatus.active,
-
-               } as Order, [ {
-                product_id : productsData[0].id,
-                product_price : 10,
-                product_quantity : 5
-            } as OrderProduct] ) as Order
+               
 
 
             const result = await request
@@ -102,58 +110,63 @@ describe('Products End Point', () => {
             .set('Authorization', `Bearer ${userToken}`)
             expect(result.status).toBe(200)
             expect(result.body.status).toEqual('success')
-            expect(result.body.data[0].category_id).toEqual(categoryData.id)
-            expect(result.body.data.price).toEqual(15)
-            expect(result.body.data.name).toEqual('product-0')
+            expect(result.body.data[0].id).toEqual(order.id)
+            expect(result.body.data[0].status).toEqual(order.status)
+            expect(result.body.data[0].user_id).toEqual(user.id)
         
 
         });
 
+        it('Test create many orders should return 200 with order_details every create', async (): Promise<void> => {
 
-            it('Test get product details with wrong product_id', async () => {
+            productsData = productsData.map((value) => {
+                return {...value, ...{product_quantity : '2', product_id : value.id }}
+            })
 
-                const result = await request
-                .get(`/api/orders/500000000`)
-                .set('Content-type', 'application/json')
-                .set('Authorization', `Bearer ${userToken}`)
-                expect(result.status).toBe(403)
-                expect(result.body.status).toEqual('failed')
-
-        });
-
-
-        it('Test create many orders should return 200 with category every create', async () => {
-
-            for (let i = 1; i <= 5; i++){
-                let productName = `product-${i}`
-                let randomPrice = (i + 1) * 2;
-                const result = await request
-                .post('/api/orders/create')
-                .set('Content-type', 'application/json')
-                .set('Authorization', `Bearer ${userToken}`).send({
-                    name : productName,
-                    category_id : categoryData.id,
-                    price : randomPrice,
-                 })
-                expect(result.status).toBe(200)
-                expect(result.body.status).toEqual('success')
-                expect(result.body.data.category_id).toEqual(categoryData.id)
-                expect(result.body.data.price).toEqual(randomPrice)
-                expect(result.body.data.name).toEqual(productName)
-            }
-
-        });
-
-        it('should list all products with count 6', async () => {
             const result = await request
-            .get('/api/products')
+            .post('/api/orders/create')
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${userToken}`).send({
+                user_id : user.id,
+                products : productsData
+                })
+            expect(result.status).toBe(200)
+            expect(result.body.data.status).toEqual(OrderStatus.active)
+            expect(result.body.data.user_id).toEqual(user.id)
+            expect(result.body.data.orderProducts.length).toEqual(productsData.length)
+
+        });
+
+
+        it('should get order details and order products with status 200', async (): Promise<void> => {
+            const result = await request
+            .get(`/api/orders/${order.id}/details`)
             .set('Content-type', 'application/json')
             .set('Authorization', `Bearer ${userToken}`)
-            const productData = result.body.data as Category[];
+            const orderData = result.body.data;
             expect(result.status).toBe(200)
             expect(result.body.status).toEqual('success')
-            expect(productData.length).toEqual(6);
+            expect(orderData.user_id).toEqual(user.id);
+            expect(orderData.orderProducts[0].order_id).toEqual(order.id);
+        });
 
+        it('Test complete order should return updated and update database', async (): Promise<void> => {
+            const result = await request
+            .post(`/api/orders/${order.id}/complete`)
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(result.status).toBe(200);
+            expect(result.body.status).toEqual('success');
+
+            const createdOrder = await orderStore.getByColumn('id',Number(order.id)) as Order;
+
+            expect(createdOrder.user_id).toEqual(Number(user.id));
+            expect(createdOrder.status).toEqual(OrderStatus.completed);
+            if(createdOrder.orderProducts) {
+                expect(createdOrder.orderProducts[0].order_id).toEqual(Number(order.id));
+            }
+        
         });
 
     })

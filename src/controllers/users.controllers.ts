@@ -10,6 +10,25 @@ const userStore = new UserStore();
 
 
 
+export const getOne = async (req : Request, res : Response, next: NextFunction) => {
+
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(422).json({ errors: errors.array() });
+        }
+        const userData = await userStore.getByColumn('id',req.params.id);
+        res.json({
+            status: 'success',
+            data: userData
+          })
+
+    } catch (err) {
+        next(err)
+      }
+
+}
+
 export const getAll = async (_ : Request, res : Response, next: NextFunction) => {
 
     try {
@@ -26,7 +45,7 @@ export const getAll = async (_ : Request, res : Response, next: NextFunction) =>
 
 }
 
-export const login =  async (req: Request, res: Response, next : NextFunction): Promise<Response|undefined> => {
+export const login =  async (req: Request, res: Response, next : NextFunction): Promise<Response|void> => {
 
     try {
 
@@ -58,7 +77,7 @@ export const login =  async (req: Request, res: Response, next : NextFunction): 
 
 
 
-export const register =  async (req: Request, res: Response, next: NextFunction): Promise<Response|undefined> => {
+export const register =  async (req: Request, res: Response, next: NextFunction): Promise<Response|void> => {
 
     try {
 
@@ -66,7 +85,6 @@ export const register =  async (req: Request, res: Response, next: NextFunction)
         if (!errors.isEmpty()) {
           return res.status(422).json({ errors: errors.array() });
         }
-        
         const userData : User = {
                 username : req.body.username,
                 password :  req.body.password,
@@ -83,7 +101,6 @@ export const register =  async (req: Request, res: Response, next: NextFunction)
             }
 
             const data = await userStore.create(userData);
-
             res.json({'status' : 'success', 'user': data});
   
       } catch (err) {

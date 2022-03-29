@@ -27,7 +27,6 @@ class OrderStore extends model_1.Model {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                console.log(order);
                 const orderQuery = yield database_1.default.query(`insert into ${this.tableName}
              (user_id) values ( ($1) ) returning *`, [order.user_id]);
                 const orderData = orderQuery.rows[0];
@@ -41,7 +40,6 @@ class OrderStore extends model_1.Model {
                 }
                 conn.release();
                 orderData['orderProducts'] = createdProducts;
-                console.log(orderData);
                 return orderData;
             }
             catch (e) {

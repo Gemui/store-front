@@ -34,6 +34,7 @@ export class OrderRequestValidator {
 
     public validateOrderParam = [
         param('id').exists().bail().notEmpty().bail().custom( async (value) => {
+
             const isOrderExists = await orderStore.getByColumn('id',value);
             if(!isOrderExists) {
                 return Promise.reject(`order_id ${value} not valid`)

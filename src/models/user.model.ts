@@ -30,7 +30,9 @@ export class UserStore extends Model {
     
 
         } catch(e) {
-            console.log(`failed to login user with error ${e}`)
+            throw new Error(
+                `Unable to authenticate (${username}): ${(e as Error).message}`
+              )
         }
 
     };
@@ -48,7 +50,6 @@ export class UserStore extends Model {
             const userQuery = await Client.query('insert into users (username, password, firstName, lastName) values ( ($1) ,($2), ($3), ($4) ) returning *',
             [user.username, hash, user.firstName, user.lastName]);
             conn.release();
-            
             return  userQuery.rows[0];
     
 
@@ -60,28 +61,6 @@ export class UserStore extends Model {
 
 
     };
-
-    // async getByColumn(column : String, value : String, operator = '='): Promise<User|null|undefined> {
-
-    //     try {
-
-    //         const conn = await Client.connect();
-    
-    //         const userQuery = await Client.query(`select * from  users where ${column} ${operator} ($1)`,[value]);
-    //         conn.release();
-    //         if(userQuery.rows.length) {
-    //             return  userQuery.rows[0] as unknown as  User;
-    //         }
-    
-    //         return null;
-
-    //     } catch(e) {
-    //         console.log(`unable to create user with error ${e}`)
-    //     }
-
-
-    // };
-
 
 
 }

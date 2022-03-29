@@ -12,11 +12,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.login = exports.getAll = void 0;
+exports.register = exports.login = exports.getAll = exports.getOne = void 0;
 const express_validator_1 = require("express-validator");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = require("../models/user.model");
 const userStore = new user_model_1.UserStore();
+const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+        const userData = yield userStore.getByColumn('id', req.params.id);
+        res.json({
+            status: 'success',
+            data: userData
+        });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+exports.getOne = getOne;
 const getAll = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userData = yield userStore.getAll();

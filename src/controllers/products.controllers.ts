@@ -47,7 +47,6 @@ export const getOne = async (req : Request, res : Response, next: NextFunction) 
 export const getTop = async (_ : Request, res : Response, next: NextFunction) => {
 
   try {
-      console.log('top')
       const productData = await productStore.topProducts();
 
       res.json({

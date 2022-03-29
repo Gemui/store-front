@@ -42,7 +42,6 @@ export class ProductStore extends Model {
             if(category_id) {
 
                 productQuery += 'where category_id = ($1)'
-                console.log(productQuery);
                  userQuery = await Client.query(productQuery, [category_id]);
 
             } else {

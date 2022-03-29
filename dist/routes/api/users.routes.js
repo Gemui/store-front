@@ -30,6 +30,7 @@ const user_request_validator_1 = require("../../validator/user.request.validator
 const routes = (0, express_1.Router)();
 const validator = new user_request_validator_1.UserRequestValidator();
 routes.route('/').get(authenticate_1.AuthenticatedUser, controllers.getAll);
+routes.route('/:id').get(authenticate_1.AuthenticatedUser, validator.validateUserId, controllers.getOne);
 routes.route('/register').post(authenticate_1.AuthenticatedUser, validator.validateRegister, controllers.register);
 routes.route('/login').post(validator.validateLogin, controllers.login);
 exports.default = routes;

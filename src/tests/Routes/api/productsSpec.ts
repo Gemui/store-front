@@ -23,7 +23,7 @@ describe('Products End Point', () => {
         lastName : 'second'
     } as User;
     let categoryData : Category;
-    beforeAll(async () => {
+    beforeAll(async (): Promise<void> => {
         const createdUser = await userModel.create(user)
         user.id = createdUser.id;
         const result = await request.post('/api/users/login').set('Content-type', 'application/json').send({
@@ -34,7 +34,7 @@ describe('Products End Point', () => {
         categoryData = await categoryStore.create({'name' : 'category-1'}) as unknown as Category;
         })
 
-    afterAll(async () => {
+    afterAll(async (): Promise<void> => {
     // clean db
     const connection = await Client.connect()
     await connection.query('DELETE FROM users');
@@ -46,7 +46,7 @@ describe('Products End Point', () => {
 
     describe('Test Crud routes', () => {
 
-        it('Test create with missing required data should return 422 with error ', async () => {
+        it('Test create with missing required data should return 422 with error ', async (): Promise<void> => {
 
             for (let i = 1; i <= 5; i++){
 
@@ -64,7 +64,7 @@ describe('Products End Point', () => {
         });
 
 
-        it('Test get product details should return excat product data with status 200', async () => {
+        it('Test get product details should return excat product data with status 200', async (): Promise<void> => {
 
                const createdProduct = await productStore.create({
                 name : 'product-0',
@@ -86,7 +86,7 @@ describe('Products End Point', () => {
         });
 
 
-            it('Test get product details with wrong product_id', async () => {
+            it('Test get product details with wrong product_id', async (): Promise<void> => {
 
                 const result = await request
                 .get(`/api/products/500000000`)
@@ -98,7 +98,7 @@ describe('Products End Point', () => {
         });
 
 
-        it('Test create many products should return 200 with category every create', async () => {
+        it('Test create many products should return 200 with category every create', async (): Promise<void> => {
 
             for (let i = 1; i <= 5; i++){
                 let productName = `product-${i}`
@@ -120,7 +120,7 @@ describe('Products End Point', () => {
 
         });
 
-        it('should list all products with count 6', async () => {
+        it('should list all products with count 6', async (): Promise<void> => {
             const result = await request
             .get('/api/products')
             .set('Content-type', 'application/json')

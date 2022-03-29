@@ -17,7 +17,6 @@ export class OrderStore extends Model {
         try {
 
             const conn = await Client.connect();
-            console.log(order);
             const orderQuery = await Client.query(`insert into ${this.tableName}
              (user_id) values ( ($1) ) returning *`,
             [order.user_id]);
@@ -42,7 +41,6 @@ export class OrderStore extends Model {
             conn.release();
         
             orderData['orderProducts'] = createdProducts;
-            console.log(orderData);
             return  orderData;
     
 
@@ -104,7 +102,6 @@ export class OrderStore extends Model {
     async getOrderDetails(order_id : number): Promise<Order> {
 
         try {
-
             const conn = await Client.connect();
             const order = await this.getByColumn('id',order_id) as unknown as Order;
             order.orderProducts = (await conn.query('select * from order_products where order_id = ($1)',[order.id])).rows as unknown as OrderProduct[];

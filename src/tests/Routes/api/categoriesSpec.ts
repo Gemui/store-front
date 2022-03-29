@@ -20,7 +20,7 @@ describe('categories End Point', () => {
         lastName : 'second'
     } as User;
 
-    beforeAll(async () => {
+    beforeAll(async (): Promise<void> => {
         const createdUser = await userModel.create(user)
         user.id = createdUser.id;
         const result = await request.post('/api/users/login').set('Content-type', 'application/json').send({
@@ -31,7 +31,7 @@ describe('categories End Point', () => {
 
         })
 
-    afterAll(async () => {
+    afterAll(async (): Promise<void> => {
     // clean db
     const connection = await Client.connect()
     await connection.query('DELETE FROM users');
@@ -42,7 +42,7 @@ describe('categories End Point', () => {
 
     describe('Test Crud routes', () => {
 
-        it('Test create with missing required data should return 422 with error ', async () => {
+        it('Test create with missing required data should return 422 with error ', async (): Promise<void> => {
 
             for (let i = 1; i <= 5; i++){
 
@@ -59,7 +59,7 @@ describe('categories End Point', () => {
 
         });
 
-        it('Test create many categories should return 200 with category every create', async () => {
+        it('Test create many categories should return 200 with category every create', async (): Promise<void> => {
 
             for (let i = 1; i <= 5; i++){
                 let categoryName = `category-${i}`
@@ -76,7 +76,7 @@ describe('categories End Point', () => {
 
         });
 
-        it('should list all categories with count 5', async () => {
+        it('should list all categories with count 5', async (): Promise<void> => {
             const result = await request
             .get('/api/categories')
             .set('Content-type', 'application/json')

@@ -59,6 +59,10 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.getOne = getOne;
 const getOrderDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
         const orderData = yield orderStore.getOrderDetails(Number(req.params.id));
         res.json({
             status: 'success',
@@ -81,7 +85,6 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             status: req.body.price,
         };
         const createdOrder = yield orderStore.create(orderData, req.body.products);
-        console.log(2, createdOrder);
         res.json({
             status: 'success',
             data: createdOrder || []

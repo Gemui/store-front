@@ -28,6 +28,7 @@ describe('User End Point', () => {
     };
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         const createdUser = yield userModel.create(user);
+        console.log(createdUser);
         user.id = createdUser.id;
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -91,6 +92,28 @@ describe('User End Point', () => {
             expect(result.status).toBe(200);
             expect(result.body.status).toEqual('success');
             expect(userData.length).toEqual(5);
+        }));
+        it('Test get user with wrong user_id should get error message with status 422 ', () => __awaiter(void 0, void 0, void 0, function* () {
+            const result = yield request
+                .get('/api/users/500000000')
+                .set('Content-type', 'application/json')
+                .set('Authorization', `Bearer ${userToken}`);
+            expect(result.status).toBe(422);
+            expect(result.body.errors[0].param).toEqual('id');
+            expect(result.body.errors[0].msg).toEqual('user_id 500000000 not valid');
+        }));
+        it('Test get user data should return success with data and status 200 ', () => __awaiter(void 0, void 0, void 0, function* () {
+            const result = yield request
+                .get(`/api/users/${user.id}`)
+                .set('Content-type', 'application/json')
+                .set('Authorization', `Bearer ${userToken}`);
+            console.log(result.body, user.id);
+            expect(result.status).toBe(200);
+            expect(result.body.status).toEqual('success');
+            expect(result.body.data.id).toEqual(user.id);
+            expect(result.body.data.username).toEqual(user.username);
+            expect(result.body.data.firstname).toEqual(user.firstName);
+            expect(result.body.data.lastname).toEqual(user.lastName);
         }));
     });
 });

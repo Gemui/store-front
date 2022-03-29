@@ -1,4 +1,7 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
+import { UserStore } from "../models/user.model";
+
+const userStore  = new UserStore();
 
 export class UserRequestValidator {
 
@@ -14,5 +17,16 @@ export class UserRequestValidator {
         body('username', 'userName should be exists and not empty').exists().bail().notEmpty(),
         body('password', 'Invalid password should be 6 character or more').exists().bail().isLength({ min : 6})
     ];
+
+    
+    public validateUserId = [
+        param('id').exists().bail().notEmpty().bail().custom( async (value) => {
+            const isUserExists = await userStore.getByColumn('id',value);
+            console.log(isUserExists);
+            if(!isUserExists) {
+                return Promise.reject(`user_id ${value} not valid`)
+            }
+        } ),
+    ]
 
 }
