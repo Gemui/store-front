@@ -6,6 +6,10 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 
+#### Postman collection
+
+[https://documenter.getpostman.com/view/7036283/UVypzHRo]()
+
 #### Products
 
 - Index `/api/products [GET]`

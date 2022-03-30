@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const errorMiddleware = (error, req, res
+const errorMiddleware = (error, _, res
 // next: NextFunction
 ) => {
     const status = error.status || 500;

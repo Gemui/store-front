@@ -16,7 +16,7 @@ const userStore = new user_model_1.UserStore();
 class UserRequestValidator {
     constructor() {
         this.validateRegister = [
-            (0, express_validator_1.body)('username', 'userName should be exists and not empty').exists(),
+            (0, express_validator_1.body)('username', 'userName should be exists and not empty').exists().bail().notEmpty().bail().isLength({ min: 2, max: 100 }),
             (0, express_validator_1.body)('password', 'Invalid password should be 6 character or more')
                 .exists()
                 .bail()
@@ -49,6 +49,8 @@ class UserRequestValidator {
                 .exists()
                 .bail()
                 .notEmpty()
+                .bail()
+                .isInt()
                 .bail()
                 .custom((value) => __awaiter(this, void 0, void 0, function* () {
                 const isUserExists = yield userStore.getByColumn('id', value);

@@ -5,7 +5,7 @@ const userStore = new UserStore()
 
 export class UserRequestValidator {
   public validateRegister = [
-    body('username', 'userName should be exists and not empty').exists(),
+    body('username', 'userName should be exists and not empty').exists().bail().notEmpty().bail().isLength({ min: 2, max: 100 }),
     body('password', 'Invalid password should be 6 character or more')
       .exists()
       .bail()
@@ -40,6 +40,8 @@ export class UserRequestValidator {
       .exists()
       .bail()
       .notEmpty()
+      .bail()
+      .isInt()
       .bail()
       .custom(async (value) => {
         const isUserExists = await userStore.getByColumn('id', value)
