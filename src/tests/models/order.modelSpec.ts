@@ -124,7 +124,16 @@ describe('Test category Model', () => {
 
                 });
 
+                it('should return order details', async () => {
 
+                    const isOrderDetails = await orderModel.getOrderDetails(orderID) as Order;
+
+                    expect(isOrderDetails.status).toEqual(OrderStatus.completed);
+                    expect(isOrderDetails.id).toEqual(orderID);
+                    expect(isOrderDetails.user_id).toEqual(Number(user.id));
+                    expect(isOrderDetails.orderProducts?.length).toEqual(1);
+
+                });
                 it('should return all user orders by user_id', async () => {
 
                     const isUserOrders = await orderModel.getUserOrders(Number(user.id)) as Order[];

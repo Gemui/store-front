@@ -94,6 +94,14 @@ describe('Test category Model', () => {
             const isCompletedOrder = yield orderModel.getByColumn('id', orderID);
             expect(isCompletedOrder.status).toEqual(orderStatus_enum_1.default.completed);
         }));
+        it('should return order details', () => __awaiter(void 0, void 0, void 0, function* () {
+            var _a;
+            const isOrderDetails = yield orderModel.getOrderDetails(orderID);
+            expect(isOrderDetails.status).toEqual(orderStatus_enum_1.default.completed);
+            expect(isOrderDetails.id).toEqual(orderID);
+            expect(isOrderDetails.user_id).toEqual(Number(user.id));
+            expect((_a = isOrderDetails.orderProducts) === null || _a === void 0 ? void 0 : _a.length).toEqual(1);
+        }));
         it('should return all user orders by user_id', () => __awaiter(void 0, void 0, void 0, function* () {
             const isUserOrders = yield orderModel.getUserOrders(Number(user.id));
             expect(isUserOrders.length).toEqual(1);

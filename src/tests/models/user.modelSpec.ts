@@ -47,6 +47,21 @@ describe('Test User Model', () => {
 
         describe('Test Model methods logic', () => {
             
+
+            it('should create user data and return all user info', async () => {
+                const isCreatedUser = await userModel.create({
+                    username : 'newusername',
+                    password : 'userpassword',
+                    firstname : 'first',
+                    lastname : 'second'
+                } as User) as User;
+                expect(isCreatedUser.username).toEqual('newusername');
+                expect(isCreatedUser.firstname).toEqual('first');
+                expect(isCreatedUser.lastname).toEqual('second');
+
+            });
+
+
             it('should authenticate user data and return all user info', async () => {
 
                     const isUserAutencticated = await userModel.authenticate(user.username, user.password) as User;

@@ -61,13 +61,18 @@ describe('Test category Model', () => {
         
             });
             
+            it('should have method topProducts in category class', () => {
+
+                expect(productModel.topProducts).toBeDefined();
+        
+            });
             
         })
 
 
         describe('Test Model methods logic', () => {
 
-            it('should create category and return category info', async () => {
+            it('create should create category and return category info', async () => {
 
                     const isCreatedProduct = await productModel.create({
                         name : 'product-test',
@@ -79,7 +84,7 @@ describe('Test category Model', () => {
                     expect(isCreatedProduct.name).toEqual('product-test');
                 });
 
-                it('should get productcs by category id ', async () => {
+                it('getProductWithCategoryExists should get productcs by category id ', async () => {
 
                     const isCreatedProduct = await productModel.getProductWithCategoryExists(category.id) as Product[];
 
@@ -89,7 +94,7 @@ describe('Test category Model', () => {
                 });
 
 
-                it('should return empty with topProducts', async () => {
+                it('topProducts should return empty with topProducts', async () => {
 
                     const isCreatedProduct = await productModel.topProducts(category.id) as Product[];
 

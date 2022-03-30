@@ -53,9 +53,12 @@ describe('Test category Model', () => {
         it('should have method getProductWithCategoryExists in category class', () => {
             expect(productModel.getProductWithCategoryExists).toBeDefined();
         });
+        it('should have method topProducts in category class', () => {
+            expect(productModel.topProducts).toBeDefined();
+        });
     });
     describe('Test Model methods logic', () => {
-        it('should create category and return category info', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('create should create category and return category info', () => __awaiter(void 0, void 0, void 0, function* () {
             const isCreatedProduct = yield productModel.create({
                 name: 'product-test',
                 category_id: Number(category.id),
@@ -63,13 +66,13 @@ describe('Test category Model', () => {
             });
             expect(isCreatedProduct.name).toEqual('product-test');
         }));
-        it('should get productcs by category id ', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('getProductWithCategoryExists should get productcs by category id ', () => __awaiter(void 0, void 0, void 0, function* () {
             const isCreatedProduct = yield productModel.getProductWithCategoryExists(category.id);
             expect(isCreatedProduct[0].name).toEqual('product-test');
             expect(isCreatedProduct[0].price).toEqual(15);
             expect(isCreatedProduct[0].category_id).toEqual(Number(category.id));
         }));
-        it('should return empty with topProducts', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('topProducts should return empty with topProducts', () => __awaiter(void 0, void 0, void 0, function* () {
             const isCreatedProduct = yield productModel.topProducts(category.id);
             expect(isCreatedProduct.length).toEqual(0);
         }));
