@@ -8,7 +8,7 @@ const validator = new UserRequestValidator()
 routes.route('/').get(AuthenticatedUser, controllers.getAll)
 
 routes.route('/:id').get(AuthenticatedUser, validator.validateUserId, controllers.getOne)
-routes.route('/register').post(AuthenticatedUser, validator.validateRegister, controllers.register)
+routes.route('/register').post(validator.validateRegister, controllers.register)
 routes.route('/login').post(validator.validateLogin, controllers.login)
 
 

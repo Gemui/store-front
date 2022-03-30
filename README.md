@@ -6,7 +6,23 @@ End point application to manage store front
 
 Node.js >= 12.13.0
 
-Postgres created database
+Create database user
+
+`CREATE USER full_stack_user WITH password 'Password123'`
+
+Create databases
+
+`CREATE DATABASE store_front;`
+
+`CREATE DATABASE store_front_test;` for testing only
+
+Grand Privileges to user;
+
+`GRANT ALL PRIVILEGES ON DATABASE store_front TO full_stack_user;`
+
+`GRANT ALL PRIVILEGES ON DATABASE store_front_test TO full_stack_user;`
+
+Database port `5432` you can change it from .env 
 
 ## Installation
 
@@ -23,7 +39,9 @@ node ./dist/server.js
 
 ### Endpoint Base Url
 
- http://localhost:3000/api
+Port : `3000`
+
+URL : `http://localhost:3000/api`
 
 #### Test
 
